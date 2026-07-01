@@ -18,12 +18,18 @@ export default function CameraScreen() {
     setIsTakingPicture(true);
 
     try {
-      const photo: CameraCapturedPicture = await cameraRef.current.takePictureAsync({ quality: 0.7 });
+      const photo: CameraCapturedPicture = await cameraRef.current.takePictureAsync({
+        quality: 0.7,
+        base64: true,
+      });
 
-      if (photo.uri) {
+      if (photo.uri && photo.base64) {
         router.push({
           pathname: './PreviewScreen',
-          params: { photoUri: photo.uri },
+          params: {
+            base64Image: photo.base64,
+            photoUri: photo.uri,
+          },
         });
       }
     } finally {

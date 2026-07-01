@@ -5,7 +5,9 @@ export default function PreviewScreen({ route, navigation } = {}) {
   const router = useRouter();
   const params = useLocalSearchParams();
   const rawPhotoUri = route?.params?.photoUri ?? params.photoUri;
+  const rawBase64Image = route?.params?.base64Image ?? params.base64Image;
   const photoUri = Array.isArray(rawPhotoUri) ? rawPhotoUri[0] : rawPhotoUri;
+  const base64Image = Array.isArray(rawBase64Image) ? rawBase64Image[0] : rawBase64Image;
 
   const retakePhoto = () => {
     if (navigation?.goBack) {
@@ -18,13 +20,13 @@ export default function PreviewScreen({ route, navigation } = {}) {
 
   const analyzePhoto = () => {
     if (navigation?.navigate) {
-      navigation.navigate('Result', { photoUri });
+      navigation.navigate('ResultScreen', { base64Image });
       return;
     }
 
     router.push({
-      pathname: '/Result',
-      params: { photoUri },
+      pathname: './ResultScreen',
+      params: { base64Image },
     });
   };
 
