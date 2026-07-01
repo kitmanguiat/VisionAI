@@ -60,7 +60,7 @@ export default function ResultScreen({ route } = {}) {
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" />
+        <ActivityIndicator color="#93c5fd" size="large" />
         <Text style={styles.loadingText}>Analyzing image...</Text>
       </View>
     );
@@ -110,37 +110,48 @@ const styles = StyleSheet.create({
   centered: {
     flex: 1,
     alignItems: 'center',
+    backgroundColor: '#0b1120',
     justifyContent: 'center',
     padding: 24,
   },
   loadingText: {
+    color: '#f9fafb',
     marginTop: 14,
     fontSize: 16,
   },
   errorTitle: {
+    color: '#f9fafb',
     marginBottom: 8,
     fontSize: 20,
     fontWeight: '700',
     textAlign: 'center',
   },
   errorMessage: {
-    color: '#4b5563',
+    color: '#d1d5db',
     fontSize: 16,
     textAlign: 'center',
   },
   content: {
+    backgroundColor: '#0b1120',
     gap: 20,
+    flexGrow: 1,
     padding: 24,
   },
   section: {
+    backgroundColor: '#111827',
+    borderColor: '#374151',
+    borderRadius: 10,
+    borderWidth: 1,
     gap: 8,
+    padding: 16,
   },
   label: {
+    color: '#f9fafb',
     fontSize: 18,
     fontWeight: '700',
   },
   bodyText: {
-    color: '#1f2937',
+    color: '#e5e7eb',
     fontSize: 16,
     lineHeight: 23,
   },

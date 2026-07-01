@@ -36,6 +36,8 @@ export default function PreviewScreen({ route, navigation } = {}) {
         <Image source={{ uri: photoUri }} style={styles.photo} resizeMode="contain" />
       </View>
       <View style={styles.controls}>
+        <Text style={styles.controlsTitle}>Choose analysis type</Text>
+        <Text style={styles.controlsSubtitle}>Select how you want this image reviewed.</Text>
         <Pressable style={[styles.button, styles.retakeButton]} onPress={retakePhoto}>
           <Text style={styles.buttonText}>Retake</Text>
         </Pressable>
@@ -67,33 +69,56 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   controls: {
-    backgroundColor: '#000000',
-    gap: 10,
-    paddingHorizontal: 24,
-    paddingBottom: 24,
-    paddingTop: 16,
+    backgroundColor: '#111827',
+    borderTopColor: '#374151',
+    borderTopWidth: 1,
+    gap: 12,
+    paddingHorizontal: 20,
+    paddingBottom: 22,
+    paddingTop: 18,
+  },
+  controlsTitle: {
+    color: '#f9fafb',
+    fontSize: 18,
+    fontWeight: '800',
+    textAlign: 'center',
+  },
+  controlsSubtitle: {
+    color: '#d1d5db',
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: 4,
+    textAlign: 'center',
   },
   button: {
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 8,
-    minHeight: 48,
+    borderRadius: 10,
+    minHeight: 52,
     paddingVertical: 14,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.18,
+    shadowRadius: 5,
+    elevation: 3,
   },
   retakeButton: {
-    backgroundColor: '#6b7280',
+    backgroundColor: '#4b5563',
   },
   academicButton: {
-    backgroundColor: '#2563eb',
+    backgroundColor: '#1d4ed8',
   },
   safetyButton: {
-    backgroundColor: '#dc2626',
+    backgroundColor: '#b91c1c',
   },
   inventoryButton: {
-    backgroundColor: '#059669',
+    backgroundColor: '#047857',
   },
   buttonText: {
-    color: '#ffffff',
+    color: '#f9fafb',
     fontSize: 16,
     fontWeight: '700',
   },
