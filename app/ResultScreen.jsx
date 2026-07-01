@@ -4,8 +4,14 @@ import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-nat
 
 import { analyzeImage } from '../lib/gemini';
 
-const PROMPT =
-  'Analyze this image and return only valid JSON in this exact shape: {"objects":["object"],"context":"short context","activities":"visible activities","recommendations":"practical recommendations"}.';
+export const PROMPTS = {
+  academic:
+    'Act as a university professor reviewing this image for a student. Return only valid JSON in this exact shape: {"objects":["object"],"context":"educational context","activities":"relevant learning observations","recommendations":"one piece of constructive feedback"}. Identify important objects, explain the educational context, and provide one concise piece of constructive feedback.',
+  safety:
+    'Act as a workplace safety inspector reviewing this image. Return only valid JSON in this exact shape: {"objects":["object"],"context":"inspection context","activities":"visible work activities","recommendations":"visible hazards or a clear statement that none exist"}. Identify visible hazards, or clearly state that no hazards are visible.',
+  inventory:
+    'Act as an asset management clerk reviewing this image. Return only valid JSON in this exact shape: {"objects":["visible asset"],"context":"","activities":"","recommendations":""}. Provide a clean list of visible assets with no commentary.',
+};
 
 function parseAnalysisText(text) {
   const cleanedText = text
@@ -20,13 +26,15 @@ function parseAnalysisText(text) {
 export default function ResultScreen({ route } = {}) {
   const params = useLocalSearchParams();
   const rawBase64Image = route?.params?.base64Image ?? params.base64Image;
+  const rawPromptKey = route?.params?.promptKey ?? params.promptKey;
   const base64Image = Array.isArray(rawBase64Image) ? rawBase64Image[0] : rawBase64Image;
+  const promptKey = Array.isArray(rawPromptKey) ? rawPromptKey[0] : rawPromptKey;
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [analysis, setAnalysis] = useState(null);
 
-  const prompt = useMemo(() => PROMPT, []);
+  const prompt = useMemo(() => PROMPTS[promptKey] ?? PROMPTS.academic, [promptKey]);
 
   useEffect(() => {
     async function runAnalysis() {

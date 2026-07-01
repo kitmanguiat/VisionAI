@@ -18,27 +18,35 @@ export default function PreviewScreen({ route, navigation } = {}) {
     router.back();
   };
 
-  const analyzePhoto = () => {
+  const analyzePhoto = (promptKey) => {
     if (navigation?.navigate) {
-      navigation.navigate('ResultScreen', { base64Image });
+      navigation.navigate('Result', { base64Image, promptKey });
       return;
     }
 
     router.push({
-      pathname: './ResultScreen',
-      params: { base64Image },
+      pathname: './Result',
+      params: { base64Image, promptKey },
     });
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Image source={{ uri: photoUri }} style={styles.photo} resizeMode="contain" />
-      <View style={styles.buttonRow}>
+      <View style={styles.photoArea}>
+        <Image source={{ uri: photoUri }} style={styles.photo} resizeMode="contain" />
+      </View>
+      <View style={styles.controls}>
         <Pressable style={[styles.button, styles.retakeButton]} onPress={retakePhoto}>
           <Text style={styles.buttonText}>Retake</Text>
         </Pressable>
-        <Pressable style={[styles.button, styles.analyzeButton]} onPress={analyzePhoto}>
-          <Text style={styles.buttonText}>Analyze</Text>
+        <Pressable style={[styles.button, styles.academicButton]} onPress={() => analyzePhoto('academic')}>
+          <Text style={styles.buttonText}>Academic Analysis</Text>
+        </Pressable>
+        <Pressable style={[styles.button, styles.safetyButton]} onPress={() => analyzePhoto('safety')}>
+          <Text style={styles.buttonText}>Safety Analysis</Text>
+        </Pressable>
+        <Pressable style={[styles.button, styles.inventoryButton]} onPress={() => analyzePhoto('inventory')}>
+          <Text style={styles.buttonText}>Inventory Analysis</Text>
         </Pressable>
       </View>
     </SafeAreaView>
@@ -50,29 +58,39 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000000',
   },
-  photo: {
+  photoArea: {
     flex: 1,
+    minHeight: 220,
+  },
+  photo: {
+    height: '100%',
     width: '100%',
   },
-  buttonRow: {
-    flexDirection: 'row',
-    gap: 12,
+  controls: {
+    backgroundColor: '#000000',
+    gap: 10,
     paddingHorizontal: 24,
     paddingBottom: 24,
     paddingTop: 16,
   },
   button: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 8,
+    minHeight: 48,
     paddingVertical: 14,
   },
   retakeButton: {
     backgroundColor: '#6b7280',
   },
-  analyzeButton: {
+  academicButton: {
     backgroundColor: '#2563eb',
+  },
+  safetyButton: {
+    backgroundColor: '#dc2626',
+  },
+  inventoryButton: {
+    backgroundColor: '#059669',
   },
   buttonText: {
     color: '#ffffff',
