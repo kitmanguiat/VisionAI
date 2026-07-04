@@ -3,6 +3,8 @@ import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
 import { Button, Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { saveCapturedImage } from '@/lib/capturedImages';
+
 export default function CameraScreen() {
   const router = useRouter();
   const cameraRef = useRef<CameraView | null>(null);
@@ -24,10 +26,12 @@ export default function CameraScreen() {
       });
 
       if (photo.uri && photo.base64) {
+        const imageId = saveCapturedImage(photo.base64);
+
         router.push({
           pathname: './PreviewScreen',
           params: {
-            base64Image: photo.base64,
+            imageId,
             photoUri: photo.uri,
           },
         });

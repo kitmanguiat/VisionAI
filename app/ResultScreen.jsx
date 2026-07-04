@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { analyzeImage } from '../lib/gemini';
+import { getCapturedImage } from '../lib/capturedImages';
 
 export const PROMPTS = {
   academic:
@@ -20,14 +21,37 @@ function parseAnalysisText(text) {
     .replace(/^```\s*/i, '')
     .replace(/\s*```$/i, '');
 
-  return JSON.parse(cleanedText);
+  try {
+    return JSON.parse(cleanedText);
+  } catch {
+    const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+
+    if (!jsonMatch) {
+      throw new Error('The analysis response was not valid JSON.');
+    }
+
+    return JSON.parse(jsonMatch[0]);
+  }
+}
+
+function getAnalysisText(result) {
+  const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  if (!text) {
+    throw new Error(result?.error?.message ?? 'The analysis response was empty.');
+  }
+
+  return text;
 }
 
 export default function ResultScreen({ route } = {}) {
   const params = useLocalSearchParams();
+  const rawImageId = route?.params?.imageId ?? params.imageId;
   const rawBase64Image = route?.params?.base64Image ?? params.base64Image;
   const rawPromptKey = route?.params?.promptKey ?? params.promptKey;
-  const base64Image = Array.isArray(rawBase64Image) ? rawBase64Image[0] : rawBase64Image;
+  const imageId = Array.isArray(rawImageId) ? rawImageId[0] : rawImageId;
+  const routeBase64Image = Array.isArray(rawBase64Image) ? rawBase64Image[0] : rawBase64Image;
+  const base64Image = getCapturedImage(imageId) ?? routeBase64Image;
   const promptKey = Array.isArray(rawPromptKey) ? rawPromptKey[0] : rawPromptKey;
 
   const [loading, setLoading] = useState(true);
@@ -44,7 +68,7 @@ export default function ResultScreen({ route } = {}) {
         }
 
         const result = await analyzeImage(base64Image, prompt);
-        const text = result.candidates[0].content.parts[0].text;
+        const text = getAnalysisText(result);
 
         setAnalysis(parseAnalysisText(text));
       } catch (caughtError) {
@@ -73,6 +97,7 @@ export default function ResultScreen({ route } = {}) {
         <Text style={styles.errorMessage}>
           We could not analyze the image right now. Please try again.
         </Text>
+        <Text style={styles.errorDetail}>{error}</Text>
       </View>
     );
   }
@@ -129,6 +154,12 @@ const styles = StyleSheet.create({
   errorMessage: {
     color: '#d1d5db',
     fontSize: 16,
+    textAlign: 'center',
+  },
+  errorDetail: {
+    color: '#6b7280',
+    fontSize: 13,
+    marginTop: 12,
     textAlign: 'center',
   },
   content: {
